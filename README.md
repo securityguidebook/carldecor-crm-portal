@@ -3,75 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Handyman Services - Book a Job</title>
+    <title>Carl Decor Handyman - Book a Job</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { background: #007cba; color: white; padding: 12px 30px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+        header { text-align: center; background: #007cba; color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; }
+        .services { background: white; padding: 25px; border-radius: 10px; margin: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        input:focus, textarea:focus, select:focus { border-color: #007cba; outline: none; }
+        button { background: #007cba; color: white; padding: 15px 40px; border: none; border-radius: 6px; cursor: pointer; font-size: 18px; width: 100%; }
         button:hover { background: #005a87; }
-        .services { background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        footer { text-align: center; margin-top: 40px; padding: 20px; color: #666; }
     </style>
 </head>
 <body>
-    <h1>Handyman Services NZ</h1>
+    <header>
+        <h1>🛠️ Carl Decor Handyman Services</h1>
+        <p>Reliable repairs & maintenance in Auckland</p>
+    </header>
     
     <div class="services">
-        <h2>Services</h2>
-        <ul>
-            <li>Plumbing repairs</li>
-            <li>Electrical (minor)</li>
-            <li>General maintenance</li>
-            <li>Assembly & installation</li>
+        <h2>Our Services</h2>
+        <ul style="list-style: none; padding: 0;">
+            <li style="background: #e8f4fd; padding: 10px; margin: 10px 0; border-radius: 6px;">🔧 Plumbing repairs & maintenance</li>
+            <li style="background: #e8f4fd; padding: 10px; margin: 10px 0; border-radius: 6px;">⚡ Electrical (minor work)</li>
+            <li style="background: #e8f4fd; padding: 10px; margin: 10px 0; border-radius: 6px;">🏠 General home maintenance</li>
+            <li style="background: #e8f4fd; padding: 10px; margin: 10px 0; border-radius: 6px;">🛋️ Furniture assembly & installation</li>
         </ul>
     </div>
 
-    <h2>Request a Quote</h2>
+    <h2>📋 Request a Free Quote</h2>
     <form id="contactForm">
         <div class="form-group">
-            <label>Name *</label>
-            <input type="text" id="name" required>
+            <label>Your Name *</label>
+            <input type="text" id="name" required placeholder="John Smith">
         </div>
         
         <div class="form-group">
             <label>Email or Phone *</label>
-            <input type="text" id="contact" required>
+            <input type="text" id="contact" required placeholder="john@example.com or 021 123 4567">
         </div>
         
         <div class="form-group">
-            <label>Service needed *</label>
+            <label>Service Needed *</label>
             <select id="service" required>
-                <option value="">Select service</option>
-                <option>Plumbing</option>
-                <option>Electrical</option>
+                <option value="">Choose a service...</option>
+                <option>Plumbing repair</option>
+                <option>Electrical work</option>
                 <option>General maintenance</option>
-                <option>Assembly</option>
+                <option>Furniture assembly</option>
                 <option>Other</option>
             </select>
         </div>
         
         <div class="form-group">
-            <label>Job description *</label>
-            <textarea id="message" rows="5" required placeholder="Describe the job..."></textarea>
+            <label>Job Description *</label>
+            <textarea id="message" rows="5" required placeholder="Tell us about the job... leaking tap, broken shelf, etc."></textarea>
         </div>
         
         <div class="form-group">
-            <label>Preferred date</label>
+            <label>Preferred Date (optional)</label>
             <input type="date" id="date">
         </div>
         
-        <button type="submit">Send Request</button>
+        <button type="submit">🚀 Send Job Request</button>
     </form>
+
+    <div id="result" style="margin-top: 20px; padding: 15px; border-radius: 6px; display: none;"></div>
 
     <script>
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Form submitted! (Demo mode - will connect to EmailJS next)');
+            document.getElementById('result').innerHTML = '<p style="color: green;">✅ Form submitted! (Demo mode - EmailJS coming next)</p>';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('contactForm').reset();
         });
     </script>
+
+    <footer>
+        <p>© 2026 Carl Decor Handyman | <a href="/privacy.html" style="color: #007cba;">Privacy Policy</a></p>
+    </footer>
 </body>
 </html>
-
-
-git add . && git commit -m "Add basic contact form" && git push
