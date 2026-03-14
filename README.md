@@ -72,3 +72,6 @@
     </script>
 </body>
 </html>
+
+
+git add . && git commit -m "Add basic contact form" && git push
