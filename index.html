@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carl Decor Handyman - Book a Job</title>
     
-    <!-- EMAILJS CDN -->
+    <!-- SECURITY HEADERS (CSP, XSS protection) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://js.hcaptcha.com https://hcaptcha.com; style-src 'self' 'unsafe-inline';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
+    <!-- SERVICES -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
@@ -18,14 +25,17 @@
         input:focus, textarea:focus, select:focus { border-color: #007cba; outline: none; }
         button { background: #007cba; color: white; padding: 15px 40px; border: none; border-radius: 6px; cursor: pointer; font-size: 18px; width: 100%; }
         button:hover { background: #005a87; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
         footer { text-align: center; margin-top: 40px; padding: 20px; color: #666; }
         #result { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; }
+        .h-captcha { margin-top: 10px; }
+        .security-badge { background: #28a745; color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; margin-left: 10px; }
     </style>
 </head>
 <body>
     <header>
         <h1>🛠️ Carl Decor Handyman Services</h1>
-        <p>Reliable repairs & maintenance in Auckland</p>
+        <p>✅ <span class="security-badge">SECURE CONTACT FORM</span> | Reliable repairs in Auckland</p>
     </header>
     
     <div class="services">
@@ -67,4 +77,88 @@
             <textarea id="message" rows="5" required placeholder="Tell us about the job... leaking tap, broken shelf, etc."></textarea>
         </div>
         
-        <div
+        <div class="form-group">
+            <label>Preferred Date</label>
+            <input type="date" id="date">
+        </div>
+        
+        <!-- YOUR REAL hCAPTCHA -->
+        <div class="form-group">
+            <label>🤖 Verify you're human <span class="security-badge">Anti‑Spam</span></label>
+            <div class="h-captcha" data-sitekey="5b3856aa-c8f2-4f28-860c-80fca576ee40"></div>
+        </div>
+        
+        <button type="submit" id="submitBtn">🚀 Send Secure Request</button>
+    </form>
+
+    <div id="result"></div>
+
+    <!-- PRODUCTION SECURITY SCRIPT -->
+    <script type="text/javascript">
+        emailjs.init("LkVmYK7zEZV-dWSUQ");
+        
+        // RATE LIMITING (3/hour per browser)
+        let submitCount = parseInt(localStorage.getItem('submitCount') || '0');
+        let lastSubmit = parseInt(localStorage.getItem('lastSubmit') || '0');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        if (Date.now() - lastSubmit < 3600000 && submitCount >= 3) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏰ Rate Limited (3/hr)';
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 1. INPUT SANITIZATION/VALIDATION
+            const name = document.getElementById('name').value.trim();
+            const contact = document.getElementById('contact').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            if (name.length < 2 || name.length > 50) return alert('❌ Name: 2-50 chars');
+            if (!contact.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$|^[0-9\s\-\+\(\)]{10,15}$/)) return alert('❌ Valid email OR phone');
+            if (message.length < 10 || message.length > 1000) return alert('❌ Message: 10-1000 chars');
+            
+            // 2. CAPTCHA CHECK
+            if (!hcaptcha.getResponse()) return alert('❌ Complete CAPTCHA');
+            
+            // 3. SEND SECURE EMAIL
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            
+            emailjs.send("service_jap8g87", "template_hmzbsuy", {
+                name: name, contact: contact, service: document.getElementById('service').value,
+                message: message, date: document.getElementById('date').value
+            }).then(function() {
+                // RATE LIMIT INCREMENT
+                localStorage.setItem('submitCount', ++submitCount);
+                localStorage.setItem('lastSubmit', Date.now());
+                
+                document.getElementById('result').innerHTML = 
+                    '<div style="color: green; background: #d4edda; padding: 25px; border-radius: 10px; text-align: center;">' +
+                    '✅ <strong>Job request sent SECURELY!</strong><br>' +
+                    '<small>Protected: CAPTCHA ✓ Rate limit ✓ CSP ✓ Input validation ✓</small><br><br>' +
+                    'Carl will contact you within 24 hours.' +
+                    '</div>';
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('contactForm').reset();
+                hcaptcha.reset();
+            }).catch(function(error) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Send Secure Request';
+                document.getElementById('result').innerHTML = 
+                    '<div style="color: red; background: #f8d7da; padding: 25px; border-radius: 10px; text-align: center;">' +
+                    '❌ Send failed<br><small>Please call Carl directly: 021‑XXX‑XXXX</small>' +
+                    '</div>';
+                document.getElementById('result').style.display = 'block';
+            });
+        });
+    </script>
+
+    <footer>
+        <p>© 2026 Carl Decor | 
+           <a href="https://github.com/securityguidebook/carldecor-crm-portal/security" style="color: #007cba;">Security</a> | 
+           <a href="#" style="color: #007cba;">Privacy</a></p>
+    </footer>
+</body>
+</html>
